@@ -21,3 +21,16 @@
 ### Project Tasks
 
 * clarify what everyone's tasks are
+
+# Summary of Essential Git Commands
+
+```bash
+# add all modified files to the "to be committed" bucket
+git add .
+
+# commit all files
+git commit -am "Enter a commit message here"
+
+# push your changes up to Github
+git push origin YOUR_BRANCH_NAME
+```

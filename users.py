@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from pydantic import BaseModel
 from typing import Optional
 
@@ -25,3 +26,6 @@ class User(BaseModel):
             '_id': database.index(user)
         }
 
+=======
+# for Tierra
+>>>>>>> c599837be3779b24a195b99285273ea1bff5221c

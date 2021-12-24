@@ -16,7 +16,7 @@ doc = {
     'name': 'Tierra Thompson',
     'message': 'Hello~'
 }
-#insert a singlue document into collection called test
+#insert a single document into collection called test
 #db.test.insert_one(doc)
 
 #doc = db.test.find_one({'name': 'Tierra Thompson'})

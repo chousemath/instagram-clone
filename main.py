@@ -4,14 +4,12 @@ from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from os import environ
-import certifi
-from pprint import pprint
 from bson.objectid import ObjectId
 load_dotenv()
 
-key = environ ['MONGODB_CONNECTION_STRING']
+key = environ['MONGODB_CONNECTION_STRING']
 
-client = MongoClient(key, tlsCAFile=certifi.where())
+client = MongoClient(key)
 db = client.wcoding
 
 class Product(BaseModel):
@@ -35,12 +33,11 @@ def get_products():
     for product in products:
         product['_id'] = str(product['_id'])
         product_list.append(product)
-        pass
     return {'products': product_list}
 
 @app.get('/products/{_id}')
 def get_product(_id: str):
-    product = db.products.find_one({'_id': ObjectId(_id)})
+    product = db.products.find_one({'_id': ObjectId(_id)}) # None
     product['_id'] = str(product['_id'])
     return product
 

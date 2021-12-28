@@ -4,12 +4,14 @@ from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from os import environ
+import certifi
+from pprint import pprint
 from bson.objectid import ObjectId
 load_dotenv()
 
-key = environ['MONGODB_CONNECTION_STRING']
+key = environ ['MONGODB_CONNECTION_STRING']
 
-client = MongoClient(key)
+client = MongoClient(key, tlsCAFile=certifi.where())
 db = client.wcoding
 
 class Product(BaseModel):

@@ -1,4 +1,4 @@
-#!/Users/tthomp/Desktop/instagram-clone/venv/bin/python3.9
+#!/Users/j/Desktop/projects/instagram-clone/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

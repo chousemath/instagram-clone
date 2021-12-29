@@ -29,7 +29,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/tthomp/Desktop/instagram-clone/venv"
+set -gx VIRTUAL_ENV "/Users/j/Desktop/projects/instagram-clone/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

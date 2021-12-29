@@ -1,10 +1,11 @@
 from typing import Optional
 from datetime import datetime
 from fastapi import FastAPI
+from starlette.responses import FileResponse 
 from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from os import environ
+from os import environ, path
 import certifi
 from pprint import pprint
 from bson.objectid import ObjectId
@@ -38,6 +39,8 @@ class Product(BaseModel):
 
 
 class Post(BaseModel):
+    # comments for Thaty
+    # please include a "user_id" field
     image_urls: list[str]
     like_count: int
     comment_count: int
@@ -46,6 +49,8 @@ class Post(BaseModel):
 
 
 class Comment(BaseModel):
+    # comments for Julie
+    # please include a "user_id" field
     creator: str
     body: str
     created_at: datetime
@@ -56,6 +61,13 @@ class Comment(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
+
+@app.get("/admin/products")
+def get_products():
+    """
+    Should display the admin page for Products
+    """
+    return FileResponse(path.join('static', 'products.html'))
 
 @app.get("/products")
 def get_products():

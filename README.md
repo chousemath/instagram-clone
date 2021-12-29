@@ -1,26 +1,15 @@
 # Instagram Clone
 
-### Git Tasks
+### Admin Frontend Tasks
 
-* everyone is signed up on Github?
-* everyone's SSH key uploaded to Github?
-* everyone cloned the Github repository?
-* everyone created their own branch?
-* everyone pushed a tiny change to Github?
-
-### MongoDB Tasks
-
-* what to install
-* how to make a database connection
-* how to insert a new document
-* how to find an existing document
-* how to update an existing document
-* how to delete an existing document
-* walk through an example
+* Introduce Bootstrap
+* Introduce Axios
 
 ### Project Tasks
 
-* clarify what everyone's tasks are
+* Tierra's task is to create a simple admin interface for managing users
+* Thaty's task is to create a simple admin interface for managing posts
+* Julie's task is to create a simple admin interface for managing comments
 
 # Summary of Essential Git Commands
 

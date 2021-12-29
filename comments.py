@@ -16,6 +16,7 @@ client = MongoClient(key, tlsCAFile=certifi.where())
 db = client.wcoding
 
 class Comment(BaseModel):
+    user_id: str
     creator: str
     body: str
     created_at: datetime

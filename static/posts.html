@@ -15,36 +15,24 @@
 
     <script>
         // Make a request for a user with a given ID
-        alert('All finished loading')
-        window.onload = function () {
-            axios.get('/products')
-                .then(function (response) {
-                    // handle success
-                    let data = response['data'];
-                    let products = data['products'];
-                    products.ForEach(fucntion(product); {
-                    console.log(product);
-                    });
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                })
-        }
+        axios.get('/posts')
+            .then(function (response) {
+                // handle success
+                console.log(response);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
     </script>
+    
 </head>
 
 <body>
     <h1>Hello, world!</h1>
-
-    <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

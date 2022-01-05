@@ -5,7 +5,7 @@ from starlette.responses import FileResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from os import environ, path
+from os import O_NDELAY, environ, path
 import certifi
 from pprint import pprint
 from bson.objectid import ObjectId
@@ -41,6 +41,7 @@ class Product(BaseModel):
 class Post(BaseModel):
     # comments for Thaty
     # please include a "user_id" field
+    user_id: ObjectId
     image_urls: list[str]
     like_count: int
     comment_count: int
@@ -144,6 +145,12 @@ def delete_comment(_id: str):
     db.comments.delete_one({"_id": ObjectId(_id)})
     return {"ok": True}
 
+@app.get("/admin/posts")
+def get_products():
+    """
+    Should display the admin page for Posts
+    """
+    return FileResponse(path.join('static', 'posts.html'))
 
 @app.get("/posts")
 def get_posts():

@@ -41,7 +41,7 @@ class Product(BaseModel):
 class Post(BaseModel):
     # comments for Thaty
     # please include a "user_id" field
-    user_id: ObjectId
+    user_id: str
     image_urls: list[str]
     like_count: int
     comment_count: int

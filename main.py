@@ -184,6 +184,14 @@ def delete_post(_id: str):
     return {"ok": True}
 
 
+
+@app.get("/admin/users")
+def get_users():
+    """
+    Should display the admin page for users
+    """
+    return FileResponse(path.join('static', 'users.html'))
+
 @app.post("/users")
 async def create_new_user(user: User):
     db.users.insert_one(user.dict())

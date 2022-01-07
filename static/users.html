@@ -14,38 +14,48 @@
     />
 
     <title>Hello, world!</title>
+
+    <!--importing axios-->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!--importing jquery-->
     <script
-      src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
       crossorigin="anonymous"
     ></script>
 
     <script>
       window.onload = function () {
-        alert("All finished loading");
         axios
-          .get("/products")
+          .get("/users")
           .then(function (response) {
             // handle success
             let data = response["data"];
-            let products = data["products"];
+            let users = data["users"];
             let htmlTemplate = "";
-            products.forEach(function (product) {
-              let _id = product["_id"];
-              let name = product["name"];
-              let price = product["price"];
+            users.forEach(function (user) {
+              let _id = user["_id"];
+              let name = name["name"];
+              let username = username["username"];
               htmlTemplate += `
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">${name}</h5>
-                <p class="card-text">$${price}</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
-                        `;
+                      <tr>
+                        <td>${name}</td>
+                        <td>${username}</td>
+                        <td>
+                          <button onclick="setUpdatePopup('${_id}', '${name}', ${username})" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
+                              Update
+                          </button>
+                        </td>
+                        <td>
+                          <button onclick="deleteProduct('${_id}')" type="button" class="btn btn-danger">
+                              Delete
+                          </button>
+                        </td>
+                      </tr>
+                  `;
             });
-            $("#card-container").append(htmlTemplate);
+            $("#data-container").append(htmlTemplate);
           })
           .catch(function (error) {
             // handle error
@@ -57,9 +67,6 @@
 
   <body>
     <h1>Hello, world!</h1>
-    <button type="button" class="btn btn-primary">Primary</button>
-
-    <div id="card-container"></div>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

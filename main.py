@@ -41,10 +41,10 @@ class Product(BaseModel):
 class Post(BaseModel):
     # comments for Thaty
     # please include a "user_id" field
-    user_id: str
-    image_urls: list[str]
-    like_count: int
-    comment_count: int
+    user_id: Optional[str]
+    image_urls: Optional[list[str]]
+    like_count: Optional[int]
+    comment_count: Optional[int]
     creator: str
     description: str
 

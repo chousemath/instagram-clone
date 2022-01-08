@@ -38,7 +38,7 @@
                               <td>${creator}</td>
                               <td>${description}</td>
                               <td>
-                                <button onclick="setUpdatePopup('${_id}', '${image_urls}', ${like_count}, ${comment_count}, ${creator}, ${description})" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
+                                <button onclick="setUpdatePopup('${_id}', '${image_urls}', '${like_count}', '${comment_count}', '${creator}', '${description}')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
                                     Update
                                 </button>
                               </td>
@@ -92,11 +92,14 @@
 
         function updatePost() {
             let _id = $('#update-id').val();
-            let image_urls = $('#new-image').val();
-            let like_count = Number($('#new-like').val());
-            let comment_count = Number($('#new-comment').val());
-            let creator = $('#new-creator').val();
-            let description = $('#new-description').val();
+            console.log(_id)
+            let image_urls = $('#update-image').val();
+            let like_count = Number($('#update-like').val());
+            let comment_count = Number($('#update-comment').val());
+            let creator = $('#update-creator').val();
+            let description = $('#update-description').val();
+            console.log(creator)
+            console.log(description)
             axios.put(`/posts/${_id}`, {
                 image_urls: image_urls,
                 like_count: like_count,

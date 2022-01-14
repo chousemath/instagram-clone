@@ -146,7 +146,7 @@ def delete_comment(_id: str):
     return {"ok": True}
 
 @app.get("/admin/posts")
-def get_products():
+def get_posts():
     """
     Should display the admin page for Posts
     """
@@ -189,6 +189,26 @@ async def update_post(_id: str, post: Post):
 def delete_post(_id: str):
     db.posts.delete_one({"_id": ObjectId(_id)})
     return {"ok": True}
+
+@app.get("/admin/feed")
+def get_posts():
+    """
+    Should display the admin page for feed
+    """
+    return FileResponse(path.join('static', 'feed.html'))
+
+@app.get("/feed")
+def get_posts():
+    """
+    Should fetch all posts from the database
+    """
+    posts = db.posts.find({})
+    post_list = []
+    for post in posts:
+        post["_id"] = str(post["_id"])
+        post_list.append(post)
+        pass
+    return {"feed": post_list}
 
 
 @app.post("/users")

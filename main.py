@@ -36,15 +36,16 @@ class User(BaseModel):
 class Product(BaseModel):
     name: str
     price: int
+    image_url:Optional[str]
 
 
 class Post(BaseModel):
     # comments for Thaty
     # please include a "user_id" field
     user_id: Optional[str]
-    image_urls: Optional[list[str]]
-    like_count: Optional[int]
+    image_urls_collection: Optional[list[str]]
     comment_count: Optional[int]
+    image_url:Optional[str]
     creator: str
     description: str
 
@@ -99,6 +100,21 @@ async def create_product(product: Product):
 @app.put("/products/{_id}")
 async def update_product(_id: str, product: Product):
     db.products.update_one({"_id": ObjectId(_id)}, {"$set": product.dict()})
+    return {"ok": True}
+
+@app.put("/products/{_id}/like")
+async def increase_like_count_for_product(_id: str):
+    obj_id = ObjectId(_id)
+    product = db.products.find_one({"_id": obj_id})
+    # new_like_count = product["like_count"] or 0
+    new_like_count = product.get("like_count", 0)
+    new_like_count += 1
+    db.products.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
+    return {"ok": True}
+
+
+@app.put("/profile/{_id}")
+async def update_profile(_id: str):
     return {"ok": True}
 
 
@@ -182,6 +198,21 @@ async def create_post(post: Post):
 @app.put("/posts/{_id}")
 async def update_post(_id: str, post: Post):
     db.posts.update_one({"_id": ObjectId(_id)}, {"$set": post.dict()})
+    return {"ok": True}
+
+@app.put("/posts/{_id}/like")
+async def increase_like_count_for_posts(_id: str):
+    obj_id = ObjectId(_id)
+    post = db.posts.find_one({"_id": obj_id})
+    #new_like_count = post["like_count"] or 0
+    new_like_count = post.get("like_count", 0)
+    new_like_count += 1
+    db.posts.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
+    return {"ok": True}
+
+
+@app.put("/profile/{_id}")
+async def update_profile(_id: str):
     return {"ok": True}
 
 

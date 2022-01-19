@@ -25,20 +25,27 @@
                     let htmlTemplate = '';
                     posts.forEach(function (post) {
                         let _id = post['_id'];
-                        let image_urls = post['image_urls'];
-                        let like_count = post['like_count'];
+                        let image_urls_collection = post['image_urls_collection'];
                         let comment_count = post['comment_count'];
                         let creator = post['creator'];
                         let description = post['description'];
+                        let imageUrl = post['image_url'] || 'https://friconix.com/jpg/fi-cnsuxl-question-mark.jpg';
+                        let likeCount = post['like_count'] || 0;
                         htmlTemplate += `
                             <tr>
-                              <td>${image_urls}</td>
-                              <td>${like_count}</td>
+                              <td>${image_urls_collection}</td>
                               <td>${comment_count}</td>
                               <td>${creator}</td>
                               <td>${description}</td>
                               <td>
-                                <button onclick="setUpdatePopup('${_id}', '${image_urls}', '${like_count}', '${comment_count}', '${creator}', '${description}')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
+                                <img style="width: 30px; height: 30px;" src="${imageUrl}" />
+                              </td>
+                              <td>${likeCount}</td>
+                              <td>
+                                <button onclick="increaseLikeCount('${_id}')" class="btn btn-success">+</button>
+                              </td>
+                              <td>
+                                <button onclick="setUpdatePopup('${_id}', '${image_urls_collection}', '${comment_count}', '${creator}', '${description}')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
                                     Update
                                 </button>
                               </td>
@@ -59,15 +66,46 @@
         }
 
         function createPost() {
-            let image_urls = $('#new-image').val();
-            let like_count = Number($('#new-like').val());
+            let image_urls_collection = $('#new-image-urls-collection').val();
             let comment_count = Number($('#new-comment').val());
+            let imageUrl = $('#new-image_url').val();
             let creator = $('#new-creator').val();
             let description = $('#new-description').val();
-
             axios.post('/posts', {
-                image_urls: image_urls,
-                like_count: like_count,
+                image_urls_collection: image_urls_collection,
+                comment_count: comment_count,
+                image_url: imageUrl,
+                creator: creator,
+                description: description,
+            })
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function setUpdatePopup(_id, image_urls_collection, comment_count, creator, description) {
+            $('#update-id').val(_id);
+            $('#update-image_urls_collection').val(image_urls_collection);
+            $('#update-comment_count').val(comment_count);
+            $('#update-creator').val(creator);
+            $('#update-description').val(description);
+    
+        }
+
+        function updatePost() {
+            let _id = $('#update-id').val();
+            console.log(_id)
+            let image_urls_collection = $('#update-image-urls-collection').val();
+            let comment_count = Number($('#update-comment').val());
+            let creator = $('#update-creator').val();
+            let description = $('#update-description').val();
+            console.log(creator)
+            console.log(description)
+            axios.put(`/posts/${_id}`, {
+                image_urls_collection: image_urls_collection,
                 comment_count: comment_count,
                 creator: creator,
                 description: description,
@@ -80,33 +118,19 @@
                 });
         }
 
-        function setUpdatePopup(_id, image_urls, like_count, comment_count, creator, description) {
-            $('#update-id').val(_id);
-            $('#update-image_urls').val(image_urls);
-            $('#update-like_count').val(like_count);
-            $('#update-comment_count').val(comment_count);
-            $('#update-creator').val(creator);
-            $('#update-description').val(description);
-    
+        function increaseLikeCount(_id) {
+            axios.put(`/posts/${_id}/like`, {})
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
 
-        function updatePost() {
-            let _id = $('#update-id').val();
-            console.log(_id)
-            let image_urls = $('#update-image').val();
-            let like_count = Number($('#update-like').val());
-            let comment_count = Number($('#update-comment').val());
-            let creator = $('#update-creator').val();
-            let description = $('#update-description').val();
-            console.log(creator)
-            console.log(description)
-            axios.put(`/posts/${_id}`, {
-                image_urls: image_urls,
-                like_count: like_count,
-                comment_count: comment_count,
-                creator: creator,
-                description: description,
-            })
+        function updateProfile() {
+            let _id = '61d7bab6e003d4f585d662fd';
+            axios.put(`/posts/${_id}/like`, {})
                 .then(function (response) {
                     window.location.reload();
                 })
@@ -143,11 +167,13 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Image_Urls</th>
-                            <th scope="col">Like_Count</th>
+                            <th scope="col">Image_Urls_Collection</th>
                             <th scope="col">Comment_Count</th>
                             <th scope="col">Creator</th>
                             <th scope="col">Description</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Likes</th>
+                            <th scope="col">Likes+</th>
                             <th scope="col">Update</th>
                             <th scope="col">Delete</th>
                         </tr>
@@ -169,6 +195,11 @@
                             <label for="new-description" class="form-label">Description</label>
                             <input type="text" class="form-control" id="new-description"
                                 placeholder="Enter text here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-image_url" class="form-label">Image URL</label>
+                            <input type="text" class="form-control" id="new-image_url"
+                                placeholder="Enter a new post image url here">
                         </div>
                         <button onclick="createPost()" type="button" class="btn btn-primary">Create</button>
                     </div>

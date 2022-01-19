@@ -27,10 +27,19 @@
                         let _id = product['_id'];
                         let name = product['name'];
                         let price = product['price'];
+                        let imageUrl = product['image_url'] || 'https://friconix.com/jpg/fi-cnsuxl-question-mark.jpg';
+                        let likeCount = product['like_count'] || 0;
                         htmlTemplate += `
                             <tr>
                               <td>${name}</td>
                               <td>$${price}</td>
+                              <td>
+                                <img style="width: 30px; height: 30px;" src="${imageUrl}" />
+                              </td>
+                              <td>${likeCount}</td>
+                              <td>
+                                <button onclick="increaseLikeCount('${_id}')" class="btn btn-success">+</button>
+                              </td>
                               <td>
                                 <button onclick="setUpdatePopup('${_id}', '${name}', ${price})" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
                                     Update
@@ -55,9 +64,11 @@
         function createProduct() {
             let name = $('#new-name').val();
             let price = Number($('#new-price').val());
+            let imageUrl = $('#new-image_url').val();
             axios.post('/products', {
                 name: name,
                 price: price,
+                image_url: imageUrl,
             })
                 .then(function (response) {
                     window.location.reload();
@@ -81,6 +92,27 @@
                 name: name,
                 price: price,
             })
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function increaseLikeCount(_id) {
+            axios.put(`/products/${_id}/like`, {})
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function updateProfile() {
+            let _id = '61d7bab6e003d4f585d662fd';
+            axios.put(`/products/${_id}/like`, {})
                 .then(function (response) {
                     window.location.reload();
                 })
@@ -119,6 +151,9 @@
                         <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Price</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Likes</th>
+                            <th scope="col">Likes+</th>
                             <th scope="col">Update</th>
                             <th scope="col">Delete</th>
                         </tr>
@@ -140,6 +175,11 @@
                             <label for="new-price" class="form-label">Product Price ($)</label>
                             <input type="number" class="form-control" id="new-price"
                                 placeholder="Enter a new product price here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-image_url" class="form-label">Image URL</label>
+                            <input type="text" class="form-control" id="new-image_url"
+                                placeholder="Enter a new product image url here">
                         </div>
                         <button onclick="createProduct()" type="button" class="btn btn-primary">Create</button>
                     </div>

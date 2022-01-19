@@ -14,73 +14,211 @@
     />
 
     <title>Hello, world!</title>
-
-    <!--importing axios-->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-    <!--importing jquery-->
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.js"
-      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <script>
-      window.onload = function () {
-        axios
-          .get("/users")
-          .then(function (response) {
-            // handle success
-            let data = response["data"];
-            let users = data["users"];
-            let htmlTemplate = "";
-            users.forEach(function (user) {
-              let _id = user["_id"];
-              let name = name["name"];
-              let username = username["username"];
-              htmlTemplate += `
-                      <tr>
-                        <td>${name}</td>
-                        <td>${username}</td>
-                        <td>
-                          <button onclick="setUpdatePopup('${_id}', '${name}', ${username})" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
-                              Update
-                          </button>
-                        </td>
-                        <td>
-                          <button onclick="deleteProduct('${_id}')" type="button" class="btn btn-danger">
-                              Delete
-                          </button>
-                        </td>
-                      </tr>
-                  `;
-            });
-            $("#data-container").append(htmlTemplate);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-      };
+        window.onload = function () {
+            axios.get('/users')
+                .then(function (response) {
+                    // handle success
+                    let data = response['data'];
+                    let users = data['users'];
+                    let htmlTemplate = '';
+                    users.forEach(function (user) {
+                        let _id = user['_id'];
+                        let name = user['name'];
+                        let username = user['username']
+                        let profile_image_url = user['profile_image_url']
+                        let biography = user['biography']
+                        htmlTemplate += `
+                            <tr>
+                              <td>${name}</td>
+                              <td>${username}</td>
+                              <td>${profile_image_url}</td>
+                              <td>${biography}</td>
+                              <td>
+                                <button onclick="setUpdatePopup('${_id}', '${name}', '${username}', '${profile_image_url}', '${biography}')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
+                                    Update
+                                </button>
+                              </td>
+                              <td>
+                                <button onclick="deleteUser('${_id}')" type="button" class="btn btn-danger">
+                                    Delete
+                                </button>
+                              </td>
+                            </tr>
+                        `;
+                    });
+                    $('#data-container').append(htmlTemplate);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+        }
+
+        function createUser() {
+            let name = $('#new-name').val();
+            let username = $('#new-username').val();
+            let profile_image_url = $('#profile_image_url').val();
+            let biography = $('#biography').val();
+            axios.post('/users', {
+                name: name,
+                username: username,
+                profile_image_url: profile_image_url,
+                biography: biography,
+            })
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function setUpdatePopup(_id, name, username, profile_image_url, biography) {
+            $('#update-id').val(_id);
+            $('#update-name').val(name);
+            $('#update-username').val(username);
+            $('#update-profile_image_url').val(profile_image_url);
+            $('#update-biography').val(biography);
+        }
+
+        function updateUser() {
+            let _id = $('#update-id').val();
+            console.log(_id)
+            let name = $('#update-name').val();
+            let username = $('#update-username').val();
+            let profile_image_url = $('#update-profile_image_url').val();
+            let biography = $('#update-biography').val();
+            axios.put(`/users/${_id}`, {
+                name: name,
+                username: username,
+                profile_image_url: profile_image_url,
+                biography: biography,
+            })
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function deleteUser(_id) {
+            axios.delete(`/users/${_id}`, {})
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
     </script>
   </head>
 
-  <body>
-    <h1>Hello, world!</h1>
+</head>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+<body>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-      crossorigin="anonymous"
-    ></script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Users</a>
+        </div>
+    </nav>
 
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    -->
-  </body>
+    <div class="container" style="padding-top: 16px;">
+        <div class="row">
+            <div class="col-8">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Profile Pic</th>
+                            <th scope="col">Biography</th>
+                            <th scope="col">Update</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-container"></tbody>
+                </table>
+
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Create a new user</h5>
+                        <div class="mb-3">
+                            <label for="new-name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="new-name"
+                                placeholder="Enter a name here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="new-username"
+                                placeholder="Enter a username here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-profile-image" class="form-label">Profile Image</label>
+                            <input type="file" class="form-control" id="new-profile-image"
+                                placeholder="Please select an image">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-profile-pic" class="form-label">Bio</label>
+                            <input type="text" class="form-control" id="new-biography">
+                        </div>
+                        <button onclick="createUser()" type="button" class="btn btn-primary">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modal for updating a user"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update a user</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="update-id" />
+                    <div class="mb-3">
+                        <label for="update-name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="update-name"
+                            placeholder="Enter name here">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-user" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="update-username"
+                            placeholder="Enter new username here">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-user" class="form-label">Profile Image</label>
+                        <input type="file" class="form-control" id="update-profile-image"
+                            placeholder="Please select an image">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-user" class="form-label">Bio</label>
+                        <input type="text" class="form-control" id="update-username">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onclick="updateUser()" type="button" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>

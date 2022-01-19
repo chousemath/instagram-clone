@@ -225,3 +225,13 @@ def find_single_user(_id: str):
 def delete_users(_id: str):
     db.users.delete_one({"_id": ObjectId(_id)})
     return {"deleted": True}
+
+
+@app.get("/profile")
+def get_profile():
+    return FileResponse(path.join('static', 'profile.html'))
+
+@app.post("/profile")
+async def create_new_profile(user: User):
+    db.users.insert_one(user.dict())
+    return {"message": "A new user was saved to the database"}

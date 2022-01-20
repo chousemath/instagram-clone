@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from fastapi import FastAPI
-from starlette.responses import FileResponse 
+from starlette.responses import FileResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -36,6 +36,7 @@ class User(BaseModel):
 class Product(BaseModel):
     name: str
     price: int
+    image_url: Optional[str]
 
 
 class Post(BaseModel):
@@ -45,7 +46,13 @@ class Post(BaseModel):
     like_count: int
     comment_count: int
     creator: str
+    # Yoyofriends showed 123
+    # CatDogFriend444
     description: str
+    # All my friends showed up to my party, haha Corona
+    # My friends showed me a cute dog
+    # My friends ate a pie
+    # "friends showed"
 
 
 class Comment(BaseModel):
@@ -67,7 +74,8 @@ def get_products():
     """
     Should display the admin page for Products
     """
-    return FileResponse(path.join('static', 'products.html'))
+    return FileResponse(path.join("static", "products.html"))
+
 
 @app.get("/products")
 def get_products():
@@ -98,6 +106,22 @@ async def create_product(product: Product):
 @app.put("/products/{_id}")
 async def update_product(_id: str, product: Product):
     db.products.update_one({"_id": ObjectId(_id)}, {"$set": product.dict()})
+    return {"ok": True}
+
+
+@app.put("/products/{_id}/like")
+async def increase_like_count_for_product(_id: str):
+    obj_id = ObjectId(_id)
+    product = db.products.find_one({"_id": obj_id})
+    # new_like_count = product["like_count"] or 0
+    new_like_count = product.get("like_count", 0)
+    new_like_count += 1
+    db.products.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
+    return {"ok": True}
+
+
+@app.put("/profile/{_id}")
+async def update_profile(_id: str):
     return {"ok": True}
 
 

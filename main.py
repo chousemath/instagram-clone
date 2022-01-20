@@ -58,6 +58,7 @@ class Post(BaseModel):
 class Comment(BaseModel):
     # comments for Julie
     # please include a "user_id" field
+    post_id: str
     creator: str
     body: str
     created_at: datetime
@@ -120,6 +121,17 @@ async def increase_like_count_for_product(_id: str):
     return {"ok": True}
 
 
+@app.put("/posts/{_id}/like")
+async def increase_like_count_for_post(_id: str):
+    obj_id = ObjectId(_id)
+    post = db.posts.find_one({"_id": obj_id})
+    # new_like_count = product["like_count"] or 0
+    new_like_count = post.get("like_count", 0)
+    new_like_count += 1
+    db.posts.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
+    return {"ok": True}
+
+
 @app.put("/profile/{_id}")
 async def update_profile(_id: str):
     return {"ok": True}
@@ -177,10 +189,37 @@ def get_posts():
     posts = db.posts.find({})
     post_list = []
     for post in posts:
-        post["_id"] = str(post["_id"])
+        post_id = post["_id"]
+        comments = list(db.comments.find({"post_id": post_id}))
+        post["comments"] = comments
+
+        post["_id"] = str(post_id)
         post_list.append(post)
-        pass
     return {"posts": post_list}
+
+
+# {
+#     'posts': [
+#         {
+#             'creator': 'bla',
+#             'description': 'flflflflf',
+#             'comments': [
+#                 'post_id': '2l5kj2l34k',
+#                 'creator': 'steve',
+#                 'body': 'This is a great post!'
+#             ]
+#         }
+#     ]
+# }
+
+
+@app.get("/temp/feed")
+def get_posts():
+    """
+    This is a temporary page to demonstrate how
+    you might build the Instagram feed UI
+    """
+    return FileResponse(path.join("static", "temp-feed.html"))
 
 
 @app.get("/posts/{_id}")

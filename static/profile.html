@@ -1,45 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    />
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Hello World!</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  </head>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+
+  <title>Hello World!</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+    </script>
+
+  <script>
+    function setUpdatePopup(_id, name, username, imageUrl, biography, birthdate, pronouns, email) {
+      $('#update-id').val(_id);
+      $('#update-name').val(name);
+      $('#update-username').val(username);
+      $('#update-profile_image_url').val(imageUrl);
+      $('#update-biography').val(biography);
+      $('update-birthdate').val(birthdate);
+      $('update-pronouns').val(pronouns);
+      $('update-email').val(email);
+
+    }
+
+
+    function updateProfile() {
+      let _id = '661e77891d89fc82a673922eb';
+      let name = $('#update-name').val();
+      let username = $('#update-username').val();
+      let imageUrl = $('#update-profile_image_url').val();
+      let biography = $('#update-biography').val();
+      let birthdate = $('update-birthdate').val();
+      let pronouns = $('update-pronouns').val();
+      let email = $('update-email').val();
+      axios.put(`/profile/${_id}`, {
+        name: name,
+        username: username,
+        imageUrl: imageUrl,
+        biography: biography,
+        birthdate: birthdate,
+        pronouns: pronouns,
+        email: email,
+      })
+        .then(function (response) {
+          window.location.reload();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
+  </script>
+</head>
 
 </head>
 
 <body>
-    <div class="card mb-3" style="max-width: 540px;">
-        <div class="row g-0">
-          <div class="col-md-4">
-            <img src="..." class="img-fluid rounded-start" alt="...">
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <h5 class="card-username">Card title</h5>
-              <p class="card-name"><small class="text-muted">Last updated 3 mins ago</small></p>
-              <p class="card-bio">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            </div>
-          </div>
-        </div>
+  <div class="card mb-3" style="max-width: 540px; text-align:center;"></div>
+  <div class="row g-0" style="justify-content: center;">
+    <div class="col-md-4" style="width: 200px;">
+      <img
+        src="https://images.squarespace-cdn.com/content/v1/58af4452d482e952940fadcb/1494017558737-SKXE2JXK1SQLWL8BWC11/Kenneth+B.+Goldberg+SJ+interior+green+top.jpg?format=1000w"
+        class="img-fluid" alt="..." style="width: 200px; height: 200px; border-radius: 50%;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-username">Card title</h5>
+        <p class="card-name"><small class="text-muted">Last updated 3 mins ago</small></p>
+        <p class="card-bio">This is a wider card with supporting text below as a natural lead-in to additional
+          content. This content is a little bit longer.</p>
       </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
+    </div>
+  </div>
+  </div>
+  <div class="d-grid col-6 mx-auto">
+    <button onclick="updateProfile()" class="btn btn-light" type="button">Edit Profile</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

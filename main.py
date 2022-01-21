@@ -26,7 +26,7 @@ class User(BaseModel):
     profile_image_url: Optional[str]
     username: str
     website: Optional[str]
-    pronouns: Optional[list[str]]
+    pronouns: Optional[str]
     biography: Optional[str]
     email: Optional[str]
     phone: Optional[int]
@@ -254,8 +254,3 @@ def delete_users(_id: str):
 @app.get("/profile")
 def get_profile():
     return FileResponse(path.join('static', 'profile.html'))
-
-@app.post("/profile")
-async def create_new_profile(user: User):
-    db.users.insert_one(user.dict())
-    return {"message": "A new user was saved to the database"}

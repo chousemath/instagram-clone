@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Hello, world!</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <style>
+        .instagram-card {
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            axios.get('/posts')
+                .then(function (response) {
+                    // console.log(response);
+                    let posts = response.data.posts;
+                    let html = '';
+                    posts.forEach(function (post) {
+                        let _id = post._id;
+                        let userId = post.user_id;
+                        let commentCount = post.comment_count;
+                        let likeCount = post.like_count;
+                        let imageUrl = post.image_url || 'https://soosung.co.kr/wp-content/uploads/2021/08/placeholder-2.png';
+                        let creator = post.creator;
+                        let description = post.description;
+                        // image_urls_collection: Optional[list[str]]
+                        html += `
+                            <div class="card instagram-card">
+                                <img src="${imageUrl}" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">${creator}</h5>
+                                    <p class="card-text">${likeCount} people have liked this post</p>
+                                    <p class="card-text">${description}</p>
+
+                                    <button onclick="increaseLikeCount('${_id}')" class="btn btn-outline-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                        </svg>
+                                    </button>
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                                        <label for="floatingTextarea">Comments</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary">Primary</button>
+
+
+                                </div>
+                            </div>
+                        `;
+                    });
+                    $('#card-container').append(html);
+                })
+                .catch(function (error) {
+                    let err = JSON.stringify(error);
+                    alert(err);
+                });
+        };
+        function increaseLikeCount(_id) {
+            axios.put(`/posts/${_id}/like`, {})
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container" id="card-container">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

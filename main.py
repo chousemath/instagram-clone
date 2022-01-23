@@ -45,7 +45,7 @@ class Post(BaseModel):
     user_id: Optional[str]
     image_urls_collection: Optional[list[str]]
     comment_count: Optional[int]
-    image_url:Optional[str]
+    image_url: Optional[str]
     creator: str
     description: str
 
@@ -176,10 +176,28 @@ def get_posts():
     posts = db.posts.find({})
     post_list = []
     for post in posts:
-        post["_id"] = str(post["_id"])
+        post_id = post["_id"]
+        user_id = post["user_id"]
+        comments = list(db.comments.find({"post_id": post_id}))
+        user = db.users.find_one({"_id": post["user_id"]})
+        post["comments"] = comments
+        if user_id:
+            post["user_id"] = str(user_id)
+        if user:
+            profile_image_url = user.get("profile_image_url", "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg") 
+            post["profile_image_url"] = profile_image_url
+        post["_id"] = str(post_id)
         post_list.append(post)
-        pass
+    print(post_list)
     return {"posts": post_list}
+
+@app.get("/temp/feed")
+def get_posts():
+    """
+    This is a temporary page to demonstrate how
+    you might build the Instagram feed UI
+    """
+    return FileResponse(path.join("static", "temp-feed.html"))
 
 
 @app.get("/posts/{_id}")
@@ -191,7 +209,11 @@ def get_post(_id: str):
 
 @app.post("/posts")
 async def create_post(post: Post):
-    db.posts.insert_one(post.dict())
+    post_dict = post.dict()
+    if post.user_id:
+        obj_id = ObjectId(post.user_id)
+        post_dict["user_id"] = obj_id
+    db.posts.insert_one(post_dict)
     return {"ok": True}
 
 
@@ -208,6 +230,16 @@ async def increase_like_count_for_posts(_id: str):
     new_like_count = post.get("like_count", 0)
     new_like_count += 1
     db.posts.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
+    return {"ok": True}
+
+@app.put("/posts/{_id}/comment")
+async def increase_comment_count_for_posts(_id: str):
+    obj_id = ObjectId(_id)
+    post = db.posts.find_one({"_id": obj_id})
+    #new_like_count = post["like_count"] or 0
+    new_comment_count = post.get("comment_count", 0)
+    new_comment_count += 1
+    db.posts.update_one({"_id": obj_id}, {"$set": {"comment_count": new_comment_count}})
     return {"ok": True}
 
 

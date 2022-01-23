@@ -34,15 +34,20 @@
                         htmlTemplate += `
                             <tr>
                               <td>${image_urls_collection}</td>
+                              
                               <td>${comment_count}</td>
                               <td>${creator}</td>
                               <td>${description}</td>
                               <td>
-                                <img style="width: 30px; height: 30px;" src="${imageUrl}" />
+                                <img style="width: 40px; height: 40px;" src="${imageUrl}" />
                               </td>
                               <td>${likeCount}</td>
                               <td>
-                                <button onclick="increaseLikeCount('${_id}')" class="btn btn-success">+</button>
+                                <button onclick="increaseLikeCount('${_id}')" class="btn btn-outline-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                </svg>
+                                </button>
                               </td>
                               <td>
                                 <button onclick="setUpdatePopup('${_id}', '${image_urls_collection}', '${comment_count}', '${creator}', '${description}')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
@@ -67,14 +72,12 @@
 
         function createPost() {
             let image_urls_collection = $('#new-image-urls-collection').val();
-            let user_id = $('#new-user-id').val();
             let comment_count = Number($('#new-comment').val());
             let imageUrl = $('#new-image_url').val();
             let creator = $('#new-creator').val();
             let description = $('#new-description').val();
             axios.post('/posts', {
                 image_urls_collection: image_urls_collection,
-                user_id: user_id,
                 comment_count: comment_count,
                 image_url: imageUrl,
                 creator: creator,
@@ -158,13 +161,29 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Posts</a>
+            <a class="navbar-brand" href="#">Feed</a>
         </div>
     </nav>
+    
 
-    <div class="container" style="padding-top: 16px;">
-        <div class="row">
-            <div class="col-8">
+    <div class="container mt-4 mb-5">
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-8">
+                <div class="feed p-2">
+                    <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white border">
+
+                    
+                        <div class="bg-white border mt-2">
+                            <div>
+                                <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
+                                    <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="https://i.imgur.com/CbOYWGm.jpg" width="45">
+                                        <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold">thatyprofile</span><span class="text-black-50 time">40 minutes ago</span></div>
+                                    </div>
+                                    <div class="feed-icon px-2"><i class="fa fa-ellipsis-v text-black-50"></i></div>
+                                </div>
+                            </div>
+                            <div class="feed-image p-2 px-3"><img class="img-fluid img-responsive" src="https://i.imgur.com/CbOYWGm.jpg"></div>
+                            <div class="d-flex justify-content-end socials p-2 py-3"><i class="fa fa-thumbs-up"></i><i class="fa fa-comments-o"></i><i class="fa fa-share"></i></div>
 
                 <table class="table">
                     <thead>
@@ -182,6 +201,7 @@
                     </thead>
                     <tbody id="data-container"></tbody>
                 </table>
+            </div>
 
             </div>
             <div class="col-4">
@@ -202,11 +222,6 @@
                             <label for="new-image_url" class="form-label">Image URL</label>
                             <input type="text" class="form-control" id="new-image_url"
                                 placeholder="Enter a new post image url here">
-                        </div>
-                        <div class="mb-3">
-                            <label for="new-user-id" class="form-label">User ID</label>
-                            <input type="text" class="form-control" id="new-user-id"
-                                placeholder="Enter a new user-id here">
                         </div>
                         <button onclick="createPost()" type="button" class="btn btn-primary">Create</button>
                     </div>
@@ -248,5 +263,37 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 </body>
+
+</html>
+
+  <div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-8">
+            <div class="feed p-2">
+                <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white border">
+                    <div class="feed-text px-2">
+                        <h6 class="text-black-50 mt-2">What's on your mind</h6>
+                    </div>
+                    <div class="feed-icon px-2"><i class="fa fa-long-arrow-up text-black-50"></i></div>
+                </div>
+                    <div class="p-2 px-3"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></div>
+                    <div class="d-flex justify-content-end socials p-2 py-3"><i class="fa fa-thumbs-up"></i><i class="fa fa-comments-o"></i><i class="fa fa-share"></i></div>
+                </div>
+                <div class="bg-white border mt-2">
+                    <div>
+                        <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
+                            <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="https://i.imgur.com/CbOYWGm.jpg" width="45">
+                                <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold">thatyprofile</span><span class="text-black-50 time">40 minutes ago</span></div>
+                            </div>
+                            <div class="feed-icon px-2"><i class="fa fa-ellipsis-v text-black-50"></i></div>
+                        </div>
+                    </div>
+                    <div class="feed-image p-2 px-3"><img class="img-fluid img-responsive" src="https://i.imgur.com/CbOYWGm.jpg"></div>
+                    <div class="d-flex justify-content-end socials p-2 py-3"><i class="fa fa-thumbs-up"></i><i class="fa fa-comments-o"></i><i class="fa fa-share"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </html>

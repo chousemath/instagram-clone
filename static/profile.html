@@ -15,6 +15,79 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
     </script>
+  <style>
+    .card-name,
+    .card-username {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .img-fluid {
+      height: 150px;
+      border-radius: 50%;
+      width: auto;
+    }
+
+    .button_example {
+      position: absolute;
+      top: 10px;
+      right: 0;
+    }
+  </style>
+  <script>
+    window.onload = function () {
+      axios.get('/profile/61e77891d89fc82a673922eb')
+        .then(function (response) {
+          //console.log('**', response);
+          let _id = '661e77891d89fc82a673922eb';
+          let html = '';
+
+          let name = response.data.name;
+          let username = response.data.username;
+          let imageUrl = response.data.profile_image_url || 'https://soosung.co.kr/wp-content/uploads/2021/08/placeholder-2.png';
+          let biography = response.data.biography;
+          let birthdate = response.data.birthdate;
+          let pronouns = response.data.pronouns;
+          let email = response.data.email;
+          html += `
+                        <div class="card mb-3" style="max-width: 540px; text-align:center;"></div>
+                        <div class="row g-0" style="justify-content: center;">
+                            <div class="col-md-4" style="width: 200px;">
+                              <h2 class="card-username">${username}</h2>
+                                <img
+                                    src="${imageUrl}"
+                                    class="img-fluid" alt="...">
+                                    <h4 class="card-name">${name}</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <p class="card-pronouns"><small class="text-muted">${pronouns}</small></p> <p class="card-birthdate"><small class="text-muted">${birthdate}</small></p>
+                                    <p class="card-bio">${biography}</p>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="d-grid col-6 mx-auto">
+                            <button onclick="setUpdatePopup('${_id}', '${name}', '${username}', '${imageUrl}', '${biography}', '${birthdate}', '${pronouns}', '${email}')" class="btn btn-light edit-button" type="button" data-bs-toggle="modal" data-bs-target="#updatePopup">Edit Profile</button>
+                        </div>
+                  `;
+
+          $('#card-container').append(html);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
+    function increaseLikeCount(_id) {
+      axios.put(`/posts/${_id}/like`, {})
+        .then(function (response) {
+          window.location.reload();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  </script>
 
   <script>
     function setUpdatePopup(_id, name, username, imageUrl, biography, birthdate, pronouns, email) {
@@ -62,26 +135,55 @@
 </head>
 
 <body>
-  <div class="card mb-3" style="max-width: 540px; text-align:center;"></div>
-  <div class="row g-0" style="justify-content: center;">
-    <div class="col-md-4" style="width: 200px;">
-      <img
-        src="https://images.squarespace-cdn.com/content/v1/58af4452d482e952940fadcb/1494017558737-SKXE2JXK1SQLWL8BWC11/Kenneth+B.+Goldberg+SJ+interior+green+top.jpg?format=1000w"
-        class="img-fluid" alt="..." style="width: 200px; height: 200px; border-radius: 50%;">
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-username">Card title</h5>
-        <p class="card-name"><small class="text-muted">Last updated 3 mins ago</small></p>
-        <p class="card-bio">This is a wider card with supporting text below as a natural lead-in to additional
-          content. This content is a little bit longer.</p>
+  <div class="container" id="card-container">
+  </div>
+  <div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modal for updating a user" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Update a user</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="update-id" />
+          <div class="mb-3">
+            <label for="update-name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="update-name" placeholder="Enter name here">
+          </div>
+          <div class="mb-3">
+            <label for="update-username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="update-username" placeholder="Enter new username here">
+          </div>
+          <div class="mb-3">
+            <label for="update-profile-image" class="form-label">Profile Image</label>
+            <input type="text" class="form-control" id="update-profile-image"
+              placeholder="Please enter an image url here">
+          </div>
+          <div class="mb-3">
+            <label for="update-biography" class="form-label">Bio</label>
+            <input type="text" class="form-control" id="update-biography">
+          </div>
+          <div class="mb-3">
+            <label for="update-birthdate" class="form-label">Birthdate</label>
+            <input type="text" class="form-control" id="update-birthdate">
+          </div>
+          <div class="mb-3">
+            <label for="update-pronouns" class="form-label">Pronouns</label>
+            <input type="text" class="form-control" id="update-pronouns">
+          </div>
+          <div class="mb-3">
+            <label for="update-email" class="form-label">Email</label>
+            <input type="text" class="form-control" id="update-email">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button onclick="updateUser()" type="button" class="btn btn-primary">Update</button>
+        </div>
       </div>
     </div>
   </div>
-  </div>
-  <div class="d-grid col-6 mx-auto">
-    <button onclick="updateProfile()" class="btn btn-light" type="button">Edit Profile</button>
-  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"></script>

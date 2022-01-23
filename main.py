@@ -293,3 +293,9 @@ def delete_users(_id: str):
 @app.get("/profile")
 def get_profile():
     return FileResponse(path.join('static', 'profile.html'))
+
+@app.get("/profile/{_id}")
+def find_single_user(_id: str):
+    user = db.users.find_one({"_id": ObjectId(_id)})
+    user["_id"] = str(user["_id"])
+    return user

@@ -186,9 +186,10 @@ def get_posts():
         if user:
             profile_image_url = user.get("profile_image_url", "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg") 
             post["profile_image_url"] = profile_image_url
+            username = user.get("username", "defaultusername")
+            post["username"] = username
         post["_id"] = str(post_id)
         post_list.append(post)
-    print(post_list)
     return {"posts": post_list}
 
 @app.get("/temp/feed")
@@ -253,7 +254,7 @@ def delete_post(_id: str):
     db.posts.delete_one({"_id": ObjectId(_id)})
     return {"ok": True}
 
-@app.get("/admin/feed")
+@app.get("/feed")
 def get_posts():
     """
     Should display the admin page for feed
@@ -273,6 +274,13 @@ def get_posts():
         pass
     return {"feed": post_list}
 
+
+@app.get("/admin/users")
+def get_users():
+    """
+    Should display the admin page for users
+    """
+    return FileResponse(path.join('static', 'users.html'))
 
 @app.post("/users")
 async def create_new_user(user: User):
@@ -307,3 +315,14 @@ def find_single_user(_id: str):
 def delete_users(_id: str):
     db.users.delete_one({"_id": ObjectId(_id)})
     return {"deleted": True}
+
+
+@app.get("/profile")
+def get_profile():
+    return FileResponse(path.join('static', 'profile.html'))
+
+@app.get("/profile/{_id}")
+def find_single_user(_id: str):
+    user = db.users.find_one({"_id": ObjectId(_id)})
+    user["_id"] = str(user["_id"])
+    return user

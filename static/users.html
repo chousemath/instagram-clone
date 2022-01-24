@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+
+    <title>Hello, world!</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        .table-container {
+            overflow-x: scroll;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            axios.get('/users')
+                .then(function (response) {
+                    // handle success
+                    let data = response['data'];
+                    let users = data['users'];
+                    let htmlTemplate = '';
+                    users.forEach(function (user) {
+                        let _id = user['_id'];
+                        let name = user['name'];
+                        let username = user['username']
+                        let birthdate = user['birthdate']
+                        let pronouns = user['pronouns']
+                        let email = user['email']
+                        let imageUrl = user['profile_image_url'] || 'https://friconix.com/jpg/fi-cnsuxl-question-mark.jpg';
+                        let biography = user['biography']
+                        htmlTemplate += `
+                            <tr>
+                              <td>${name}</td>
+                              <td>${username}</td>
+                              <td>
+                                <img style="width: 30px; height: 30px;" src="${imageUrl}" />
+                              </td>
+                              <td>${biography}</td>
+                              <td>${birthdate}</td>
+                              <td>${pronouns}</td>
+                              <td>${email}</td>
+                              <td>
+                                <button onclick="setUpdatePopup('${_id}', '${name}', '${username}', '${imageUrl}', '${biography}', '${birthdate}', '${pronouns}', '${email}')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePopup">
+                                    Update
+                                </button>
+                              </td>
+                              <td>
+                                <button onclick="deleteUser('${_id}')" type="button" class="btn btn-danger">
+                                    Delete
+                                </button>
+                              </td>
+                            </tr>
+                        `;
+                    });
+                    $('#data-container').append(htmlTemplate);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+        }
+
+        function createUser() {
+            let name = $('#new-name').val();
+            let username = $('#new-username').val();
+            let imageUrl = $('#new-profile-image').val();
+            let biography = $('#new-biography').val();
+            let birthdate = $('#new-birthdate').val();
+            let pronouns = $('#new-pronouns').val();
+            let email = $('#new-email').val();
+            axios.post('/users', {
+                name: name,
+                username: username,
+                profile_image_url: imageUrl,
+                biography: biography,
+                birthdate: birthdate,
+                pronouns: pronouns,
+                email: email
+            })
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function setUpdatePopup(_id, name, username, imageUrl, biography, birthdate, pronouns, email) {
+            $('#update-id').val(_id);
+            $('#update-name').val(name);
+            $('#update-username').val(username);
+            $('#update-profile-image').val(imageUrl);
+            $('#update-biography').val(biography);
+            $('#update-birthdate').val(birthdate);
+            $('#update-pronouns').val(pronouns);
+            $('#update-email').val(email);
+
+        }
+
+        function updateUser() {
+            let _id = $('#update-id').val();
+            console.log(_id)
+            let name = $('#update-name').val();
+            let username = $('#update-username').val();
+            let imageUrl = $('#update-profile-image').val();
+            let biography = $('#update-biography').val();
+            let birthdate = $('#update-birthdate').val();
+            let pronouns = $('#update-pronouns').val();
+            let email = $('#update-email').val();
+            axios.put(`/users/${_id}`, {
+                name: name,
+                username: username,
+                profile_image_url: imageUrl,
+                biography: biography,
+                birthdate: birthdate,
+                pronouns: pronouns,
+                email: email,
+            })
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function deleteUser(_id) {
+            axios.delete(`/users/${_id}`, {})
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    </script>
+</head>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Users</a>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 16px;">
+        <div class="row">
+            <div class="col-8 table-container">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Profile Pic</th>
+                            <th scope="col">Biography</th>
+                            <th scope="col">Birthdate</th>
+                            <th scope="col">Pronouns</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Update</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-container"></tbody>
+                </table>
+
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Create a new user</h5>
+                        <div class="mb-3">
+                            <label for="new-name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="new-name" placeholder="Enter a name here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="new-username"
+                                placeholder="Enter a username here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-profile-image" class="form-label">Profile Image</label>
+                            <input type="text" class="form-control" id="new-profile-image"
+                                placeholder="Please enter an image url here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-biography" class="form-label">Bio</label>
+                            <input type="text" class="form-control" id="new-biography"
+                                placeholder="Please write about yourself here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-birthdate" class="form-label">Birthdate</label>
+                            <input type="text" class="form-control" id="new-birthdate"
+                                placeholder="Please enter your birthdate here (Month, Day, Year)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-pronouns" class="form-label">Pronouns</label>
+                            <input type="text" class="form-control" id="new-pronouns"
+                                placeholder="Please enter your pronouns here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-email" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="new-email"
+                                placeholder="Please enter your email here">
+                        </div>
+                        <button onclick="createUser()" type="button" class="btn btn-primary">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modal for updating a user"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update a user</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="update-id" />
+                    <div class="mb-3">
+                        <label for="update-name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="update-name" placeholder="Enter name here">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="update-username"
+                            placeholder="Enter new username here">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-profile-image" class="form-label">Profile Image</label>
+                        <input type="text" class="form-control" id="update-profile-image"
+                            placeholder="Please enter an image url here">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-biography" class="form-label">Bio</label>
+                        <input type="text" class="form-control" id="update-biography">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-birthdate" class="form-label">Birthdate</label>
+                        <input type="text" class="form-control" id="update-birthdate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-pronouns" class="form-label">Pronouns</label>
+                        <input type="text" class="form-control" id="update-pronouns">
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-email" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="update-email">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onclick="updateUser()" type="button" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

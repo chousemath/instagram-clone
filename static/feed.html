@@ -27,6 +27,7 @@
                         let _id = post._id;
                         let userId = post.user_id;
                         let profile_image_url = post.profile_image_url || "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg";
+                        let username = post.username || "defaultusername";
                         let commentCount = post.comment_count;
                         let likeCount = post.like_count;
                         let imageUrl = post.image_url || 'https://soosung.co.kr/wp-content/uploads/2021/08/placeholder-2.png';
@@ -37,7 +38,7 @@
                             <div class="card instagram-card">
                                 <br>
                                 <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="${profile_image_url}" width="45">
-                                        <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold">${creator}</span></div>
+                                        <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold">${username}</span></div>
                                     </div>
                                     <br>
                                 <img src="${imageUrl}" class="card-img-top" alt="...">
@@ -64,10 +65,12 @@
 
                                     <p class="card-text">${likeCount} people have liked this post</p>
                                     
-                                    <h3>
-                                    ${creator}
-                                    <small class="text-muted">${description}</small>
-                                    </h3>
+
+                                    <ul class="list-inline">
+                                    <li class="list-inline-item"><strong> ${username} </strong></li>
+                                    <li class="list-inline-item">${description}</li>
+                                    </ul>
+                                    
 
                                     <a href="#" class="text-decoration-none">View ${commentCount} comments</a>
 
@@ -114,6 +117,7 @@
 </head>
 
 <body>
+    
     <div class="container" id="card-container">
     </div>
 

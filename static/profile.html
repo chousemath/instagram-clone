@@ -23,32 +23,44 @@
     }
 
     .img-fluid {
-      height: 150px;
       border-radius: 50%;
-      width: auto;
     }
 
-    .button_example {
-      position: absolute;
-      top: 10px;
-      right: 0;
+    .edit-post {
+      text-align: center;
+    }
+
+    .img-thumbnail {
+      margin-top: 10px;
+      height: 150px;
+    }
+
+    .card-pronouns {
+      float: right;
     }
   </style>
   <script>
     window.onload = function () {
-      axios.get('/profile/61e77891d89fc82a673922eb')
-        .then(function (response) {
-          //console.log('**', response);
-          let _id = '661e77891d89fc82a673922eb';
+      const responseA = axios.get('/profile/61e77891d89fc82a673922eb')
+      const responseB = axios.get('/posts/61ed1cc0f8f476b335f33d52')
+      Promise.all([responseA, responseB])
+        .then(function ([responseA, responseB]) {
+          console.log('**', responseA, responseB);
+          let _id = responseA.data._id;
           let html = '';
+          let name = responseA.data.name;
+          let username = responseA.data.username;
+          let imageUrl = responseA.data.profile_image_url || 'https://soosung.co.kr/wp-content/uploads/2021/08/placeholder-2.png';
+          let biography = responseA.data.biography;
+          let birthdate = responseA.data.birthdate;
+          let pronouns = responseA.data.pronouns;
+          let email = responseA.data.email;
 
-          let name = response.data.name;
-          let username = response.data.username;
-          let imageUrl = response.data.profile_image_url || 'https://soosung.co.kr/wp-content/uploads/2021/08/placeholder-2.png';
-          let biography = response.data.biography;
-          let birthdate = response.data.birthdate;
-          let pronouns = response.data.pronouns;
-          let email = response.data.email;
+          let creator = responseB.data.creator;
+          let photo = responseB.data.image_url;
+          let description = responseB.data.description;
+          let image_urls_collection = responseB.data.image_urls_collection;
+          let photoId = responseB.data._id;
           html += `
                         <div class="card mb-3" style="max-width: 540px; text-align:center;"></div>
                         <div class="row g-0" style="justify-content: center;">
@@ -61,15 +73,21 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <p class="card-pronouns"><small class="text-muted">${pronouns}</small></p> <p class="card-birthdate"><small class="text-muted">${birthdate}</small></p>
+                                    <p class="card-pronouns"><small class="text-muted">${pronouns}</small></p> 
+                                    <p class="card-birthdate"><small class="text-muted">${birthdate}</small></p>
                                     <p class="card-bio">${biography}</p>
+                                    <p class="card-email"><small class="text-muted">${email}</small></p>
                                 </div>
                             </div>
                         </div>
                         </div>
-                        <div class="d-grid col-6 mx-auto">
-                            <button onclick="setUpdatePopup('${_id}', '${name}', '${username}', '${imageUrl}', '${biography}', '${birthdate}', '${pronouns}', '${email}')" class="btn btn-light edit-button" type="button" data-bs-toggle="modal" data-bs-target="#updatePopup">Edit Profile</button>
+                        <div class="edit-post">
+                            <button onclick="setUpdatePopup('${_id}', '${name}', '${username}', '${imageUrl}', '${biography}', '${birthdate}', '${pronouns}', '${email}')" class="btn edit-button btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#updatePopup">Edit Profile</button>
+                            <button onclick="setCreatePostPopup('${photoId}', ${creator}', '${description}', '${photo}', '${image_urls_collection}')" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#createPostPopup">Post Image</button>
                         </div>
+                        <div>
+                          <img src="${photo}" class="img-thumbnail" alt="...">
+                          </div>
                   `;
 
           $('#card-container').append(html);
@@ -78,15 +96,6 @@
           console.log(error);
         });
     };
-    function increaseLikeCount(_id) {
-      axios.put(`/posts/${_id}/like`, {})
-        .then(function (response) {
-          window.location.reload();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
   </script>
 
   <script>
@@ -94,7 +103,7 @@
       $('#update-id').val(_id);
       $('#update-name').val(name);
       $('#update-username').val(username);
-      $('#update-profile_image_url').val(imageUrl);
+      $('#update-profile-image').val(imageUrl);
       $('#update-biography').val(biography);
       $('update-birthdate').val(birthdate);
       $('update-pronouns').val(pronouns);
@@ -104,10 +113,10 @@
 
 
     function updateProfile() {
-      let _id = '661e77891d89fc82a673922eb';
+      let _id = $('#update-id').val();
       let name = $('#update-name').val();
       let username = $('#update-username').val();
-      let imageUrl = $('#update-profile_image_url').val();
+      let imageUrl = $('#update-profile-image').val();
       let biography = $('#update-biography').val();
       let birthdate = $('update-birthdate').val();
       let pronouns = $('update-pronouns').val();
@@ -129,6 +138,39 @@
         });
     }
 
+    function createPost() {
+      let _id = $('#update-id').val();
+      let image_urls_collection = $('#new-image-urls-collection').val();
+      let user_id = $('#new-user-id').val();
+      let comment_count = Number($('#new-comment').val());
+      let photo = $('#new-image-url').val();
+      let creator = $('#new-creator').val();
+      let description = $('#new-description').val();
+      axios.post('/profile', {
+        image_urls_collection: image_urls_collection,
+        user_id: user_id,
+        comment_count: comment_count,
+        photo: photo,
+        creator: creator,
+        description: description,
+      })
+        .then(function (response) {
+          window.location.reload();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
+    function setCreatePostPopup(photoId, creator, photo, description) {
+      $('#new-photoId').val(photoId);
+      $('#new-photo').val(photo);
+      $('#new-creator').val(creator);
+      $('#new-description').val(description);
+
+    }
+
+
   </script>
 </head>
 
@@ -137,11 +179,12 @@
 <body>
   <div class="container" id="card-container">
   </div>
-  <div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modal for updating a user" aria-hidden="true">
+  <div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modal for updating profile"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Update a user</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Update Profile</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -178,12 +221,45 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button onclick="updateUser()" type="button" class="btn btn-primary">Update</button>
+          <button onclick="updateProfile()" type="button" class="btn btn-primary">Update</button>
         </div>
       </div>
     </div>
   </div>
 
+
+
+
+  <div class="modal fade" id="createPostPopup" tabindex="-1" aria-labelledby="modal for creating a post"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create a post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="update-id" />
+          <div class="mb-3">
+            <label for="new-photo" class="form-label">Photo URL</label>
+            <input type="text" class="form-control" id="new-photo" placeholder="Enter a photo URL here">
+          </div>
+          <div class="mb-3">
+            <label for="new-creator" class="form-label">Creator</label>
+            <input type="text" class="form-control" id="new-creator" placeholder="Enter creator here">
+          </div>
+          <div class="mb-3">
+            <label for="new-description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="new-description" placeholder="Enter new text here">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button onclick="createPost()" type="button" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"></script>

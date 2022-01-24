@@ -49,6 +49,7 @@ class Post(BaseModel):
     # Yoyofriends showed 123
     # CatDogFriend444
     description: str
+    image_url: Optional[str]
     # All my friends showed up to my party, haha Corona
     # My friends showed me a cute dog
     # My friends ate a pie
@@ -133,8 +134,9 @@ async def increase_like_count_for_post(_id: str):
 
 
 @app.put("/profile/{_id}")
-async def update_profile(_id: str):
-    return {"ok": True}
+async def update_user(_id: str, user: User):
+    db.users.update_one({"_id": ObjectId(_id)}, {"$set": user.dict()})
+    return {"updated": True}
 
 
 @app.delete("/products/{_id}")
@@ -299,3 +301,9 @@ def find_single_user(_id: str):
     user = db.users.find_one({"_id": ObjectId(_id)})
     user["_id"] = str(user["_id"])
     return user
+
+
+@app.post("/profile{_id}")
+async def create_post(post: Post):
+    db.posts.insert_one(post.dict())
+    return {"ok": True}

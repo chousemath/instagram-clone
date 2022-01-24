@@ -97,7 +97,7 @@
             $('#update-id').val(_id);
             $('#update-name').val(name);
             $('#update-username').val(username);
-            $('#update-profile_image_url').val(imageUrl);
+            $('#update-profile-image').val(imageUrl);
             $('#update-biography').val(biography);
             $('#update-birthdate').val(birthdate);
             $('#update-pronouns').val(pronouns);
@@ -110,7 +110,7 @@
             console.log(_id)
             let name = $('#update-name').val();
             let username = $('#update-username').val();
-            let imageUrl = $('#update-profile_image').val();
+            let imageUrl = $('#update-profile-image').val();
             let biography = $('#update-biography').val();
             let birthdate = $('#update-birthdate').val();
             let pronouns = $('#update-pronouns').val();
@@ -118,7 +118,7 @@
             axios.put(`/users/${_id}`, {
                 name: name,
                 username: username,
-                imageUrl: imageUrl,
+                profile_image_url: imageUrl,
                 biography: biography,
                 birthdate: birthdate,
                 pronouns: pronouns,

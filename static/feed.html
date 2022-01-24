@@ -28,6 +28,7 @@
                         let userId = post.user_id;
                         let profile_image_url = post.profile_image_url || "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg";
                         let username = post.username || "defaultusername";
+                        let created_at = post.created_at;
                         let commentCount = post.comment_count;
                         let likeCount = post.like_count;
                         let imageUrl = post.image_url || 'https://soosung.co.kr/wp-content/uploads/2021/08/placeholder-2.png';
@@ -82,7 +83,7 @@
                                     <br>
 
                                     <button type="button" class="btn btn-primary">Comment</button>
-                                    <div <span class="text-black-50 time">40 minutes ago</span> </div>
+                                    <div <span class="text-black-50 time">${created_at}</span> </div>
                                 </div>
                             </div>
                         `;
@@ -111,6 +112,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+        
         }
 
     </script>

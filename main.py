@@ -188,6 +188,8 @@ def get_posts():
             post["profile_image_url"] = profile_image_url
             username = user.get("username", "defaultusername")
             post["username"] = username
+        post.get('_id').generation_time
+        post['created_at'] = str(post['_id'].generation_time)
         post["_id"] = str(post_id)
         post_list.append(post)
     return {"posts": post_list}

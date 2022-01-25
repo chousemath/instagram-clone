@@ -83,7 +83,6 @@
                         </div>
                         <div class="edit-post">
                             <button onclick="setUpdatePopup('${_id}', '${name}', '${username}', '${imageUrl}', '${biography}', '${birthdate}', '${pronouns}', '${email}')" class="btn edit-button btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#updatePopup">Edit Profile</button>
-                            <button onclick="setCreatePostPopup('${photoId}', ${creator}', '${description}', '${photo}', '${image_urls_collection}')" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#createPostPopup">Post Image</button>
                         </div>
                         <div>
                           <img src="${photo}" class="img-thumbnail" alt="...">
@@ -118,9 +117,9 @@
       let username = $('#update-username').val();
       let imageUrl = $('#update-profile-image').val();
       let biography = $('#update-biography').val();
-      let birthdate = $('update-birthdate').val();
-      let pronouns = $('update-pronouns').val();
-      let email = $('update-email').val();
+      let birthdate = $('#update-birthdate').val();
+      let pronouns = $('#update-pronouns').val();
+      let email = $('#update-email').val();
       axios.put(`/profile/${_id}`, {
         name: name,
         username: username,

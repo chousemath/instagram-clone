@@ -5,7 +5,7 @@ from starlette.responses import FileResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from os import environ, path
+from os import O_NDELAY, environ, path
 import certifi
 from pprint import pprint
 from bson.objectid import ObjectId
@@ -42,9 +42,10 @@ class Product(BaseModel):
 class Post(BaseModel):
     # comments for Thaty
     # please include a "user_id" field
-    image_urls: list[str]
-    like_count: int
-    comment_count: int
+    user_id: Optional[str]
+    image_urls_collection: Optional[list[str]]
+    comment_count: Optional[int]
+    image_url: Optional[str]
     creator: str
     # Yoyofriends showed 123
     # CatDogFriend444
@@ -122,6 +123,22 @@ async def increase_like_count_for_product(_id: str):
     return {"ok": True}
 
 
+@app.put("/profile/{_id}")
+async def update_profile(_id: str):
+    return {"ok": True}
+
+
+@app.put("/products/{_id}/like")
+async def increase_like_count_for_product(_id: str):
+    obj_id = ObjectId(_id)
+    product = db.products.find_one({"_id": obj_id})
+    # new_like_count = product["like_count"] or 0
+    new_like_count = product.get("like_count", 0)
+    new_like_count += 1
+    db.products.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
+    return {"ok": True}
+
+
 @app.put("/posts/{_id}/like")
 async def increase_like_count_for_post(_id: str):
     obj_id = ObjectId(_id)
@@ -183,6 +200,14 @@ def delete_comment(_id: str):
     return {"ok": True}
 
 
+@app.get("/admin/posts")
+def get_posts():
+    """
+    Should display the admin page for Posts
+    """
+    return FileResponse(path.join("static", "posts.html"))
+
+
 @app.get("/posts")
 def get_posts():
     """
@@ -192,12 +217,34 @@ def get_posts():
     post_list = []
     for post in posts:
         post_id = post["_id"]
+        user_id = post["user_id"]
         comments = list(db.comments.find({"post_id": post_id}))
+        user = db.users.find_one({"_id": post["user_id"]})
         post["comments"] = comments
-
+        if user_id:
+            post["user_id"] = str(user_id)
+        if user:
+            profile_image_url = user.get(
+                "profile_image_url",
+                "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg",
+            )
+            post["profile_image_url"] = profile_image_url
+            username = user.get("username", "defaultusername")
+            post["username"] = username
+        post.get("_id").generation_time
+        post["created_at"] = str(post["_id"].generation_time)
         post["_id"] = str(post_id)
         post_list.append(post)
     return {"posts": post_list}
+
+
+@app.get("/temp/feed")
+def get_posts():
+    """
+    This is a temporary page to demonstrate how
+    you might build the Instagram feed UI
+    """
+    return FileResponse(path.join("static", "temp-feed.html"))
 
 
 # {
@@ -233,7 +280,11 @@ def get_post(_id: str):
 
 @app.post("/posts")
 async def create_post(post: Post):
-    db.posts.insert_one(post.dict())
+    post_dict = post.dict()
+    if post.user_id:
+        obj_id = ObjectId(post.user_id)
+        post_dict["user_id"] = obj_id
+    db.posts.insert_one(post_dict)
     return {"ok": True}
 
 
@@ -243,11 +294,59 @@ async def update_post(_id: str, post: Post):
     return {"ok": True}
 
 
+@app.put("/posts/{_id}/like")
+async def increase_like_count_for_posts(_id: str):
+    obj_id = ObjectId(_id)
+    post = db.posts.find_one({"_id": obj_id})
+    # new_like_count = post["like_count"] or 0
+    new_like_count = post.get("like_count", 0)
+    new_like_count += 1
+    db.posts.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
+    return {"ok": True}
+
+
+@app.put("/posts/{_id}/comment")
+async def increase_comment_count_for_posts(_id: str):
+    obj_id = ObjectId(_id)
+    post = db.posts.find_one({"_id": obj_id})
+    # new_like_count = post["like_count"] or 0
+    new_comment_count = post.get("comment_count", 0)
+    new_comment_count += 1
+    db.posts.update_one({"_id": obj_id}, {"$set": {"comment_count": new_comment_count}})
+    return {"ok": True}
+
+
+@app.put("/profile/{_id}")
+async def update_profile(_id: str):
+    return {"ok": True}
+
+
 @app.delete("/posts/{_id}")
 def delete_post(_id: str):
     db.posts.delete_one({"_id": ObjectId(_id)})
     return {"ok": True}
 
+
+@app.get("/feed")
+def get_posts():
+    """
+    Should display the admin page for feed
+    """
+    return FileResponse(path.join("static", "feed.html"))
+
+
+@app.get("/feed")
+def get_posts():
+    """
+    Should fetch all posts from the database
+    """
+    posts = db.posts.find({})
+    post_list = []
+    for post in posts:
+        post["_id"] = str(post["_id"])
+        post_list.append(post)
+        pass
+    return {"feed": post_list}
 
 
 @app.get("/admin/users")
@@ -255,7 +354,16 @@ def get_users():
     """
     Should display the admin page for users
     """
-    return FileResponse(path.join('static', 'users.html'))
+    return FileResponse(path.join("static", "users.html"))
+
+
+@app.get("/admin/users")
+def get_users():
+    """
+    Should display the admin page for users
+    """
+    return FileResponse(path.join("static", "users.html"))
+
 
 @app.post("/users")
 async def create_new_user(user: User):
@@ -294,16 +402,11 @@ def delete_users(_id: str):
 
 @app.get("/profile")
 def get_profile():
-    return FileResponse(path.join('static', 'profile.html'))
+    return FileResponse(path.join("static", "profile.html"))
+
 
 @app.get("/profile/{_id}")
 def find_single_user(_id: str):
     user = db.users.find_one({"_id": ObjectId(_id)})
     user["_id"] = str(user["_id"])
     return user
-
-
-@app.post("/profile{_id}")
-async def create_post(post: Post):
-    db.posts.insert_one(post.dict())
-    return {"ok": True}

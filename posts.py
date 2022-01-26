@@ -19,6 +19,7 @@ db = client.wcoding
 app = FastAPI()
 
 class Post(BaseModel):
+    user_id: ObjectId
     image_urls: list[str]
     like_count: int
     comment_count: int

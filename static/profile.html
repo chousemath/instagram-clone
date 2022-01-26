@@ -16,6 +16,23 @@
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
     </script>
   <style>
+    body {
+      background-color: black;
+    }
+
+    .mobile-container {
+      background-color: black;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .content-container {
+      width: 400px;
+      background-color: white;
+    }
+
     .card-name,
     .card-username {
       font-weight: bold;
@@ -177,85 +194,110 @@
 </head>
 
 <body>
-  <div class="container" id="card-container">
-  </div>
-  <div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modal for updating profile"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Update Profile</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="update-id" />
-          <div class="mb-3">
-            <label for="update-name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="update-name" placeholder="Enter name here">
-          </div>
-          <div class="mb-3">
-            <label for="update-username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="update-username" placeholder="Enter new username here">
-          </div>
-          <div class="mb-3">
-            <label for="update-profile-image" class="form-label">Profile Image</label>
-            <input type="text" class="form-control" id="update-profile-image"
-              placeholder="Please enter an image url here">
-          </div>
-          <div class="mb-3">
-            <label for="update-biography" class="form-label">Bio</label>
-            <input type="text" class="form-control" id="update-biography">
-          </div>
-          <div class="mb-3">
-            <label for="update-birthdate" class="form-label">Birthdate</label>
-            <input type="text" class="form-control" id="update-birthdate">
-          </div>
-          <div class="mb-3">
-            <label for="update-pronouns" class="form-label">Pronouns</label>
-            <input type="text" class="form-control" id="update-pronouns">
-          </div>
-          <div class="mb-3">
-            <label for="update-email" class="form-label">Email</label>
-            <input type="text" class="form-control" id="update-email">
+  <div class="mobile-container">
+    <div class="content-container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light nav-bar-sticky">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">InstaClone</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="/" aria-current="page" href="#">Feed</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/profile">Profile</a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button onclick="updateProfile()" type="button" class="btn btn-primary">Update</button>
+      </nav>
+
+      <div class="container" id="card-container">
+      </div>
+      <div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modal for updating profile"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Update Profile</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="update-id" />
+              <div class="mb-3">
+                <label for="update-name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="update-name" placeholder="Enter name here">
+              </div>
+              <div class="mb-3">
+                <label for="update-username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="update-username" placeholder="Enter new username here">
+              </div>
+              <div class="mb-3">
+                <label for="update-profile-image" class="form-label">Profile Image</label>
+                <input type="text" class="form-control" id="update-profile-image"
+                  placeholder="Please enter an image url here">
+              </div>
+              <div class="mb-3">
+                <label for="update-biography" class="form-label">Bio</label>
+                <input type="text" class="form-control" id="update-biography">
+              </div>
+              <div class="mb-3">
+                <label for="update-birthdate" class="form-label">Birthdate</label>
+                <input type="text" class="form-control" id="update-birthdate">
+              </div>
+              <div class="mb-3">
+                <label for="update-pronouns" class="form-label">Pronouns</label>
+                <input type="text" class="form-control" id="update-pronouns">
+              </div>
+              <div class="mb-3">
+                <label for="update-email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="update-email">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button onclick="updateProfile()" type="button" class="btn btn-primary">Update</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
 
 
 
-  <div class="modal fade" id="createPostPopup" tabindex="-1" aria-labelledby="modal for creating a post"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Create a post</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="update-id" />
-          <div class="mb-3">
-            <label for="new-photo" class="form-label">Photo URL</label>
-            <input type="text" class="form-control" id="new-photo" placeholder="Enter a photo URL here">
+      <div class="modal fade" id="createPostPopup" tabindex="-1" aria-labelledby="modal for creating a post"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create a post</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="update-id" />
+              <div class="mb-3">
+                <label for="new-photo" class="form-label">Photo URL</label>
+                <input type="text" class="form-control" id="new-photo" placeholder="Enter a photo URL here">
+              </div>
+              <div class="mb-3">
+                <label for="new-creator" class="form-label">Creator</label>
+                <input type="text" class="form-control" id="new-creator" placeholder="Enter creator here">
+              </div>
+              <div class="mb-3">
+                <label for="new-description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="new-description" placeholder="Enter new text here">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button onclick="createPost()" type="button" class="btn btn-primary">Create</button>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="new-creator" class="form-label">Creator</label>
-            <input type="text" class="form-control" id="new-creator" placeholder="Enter creator here">
-          </div>
-          <div class="mb-3">
-            <label for="new-description" class="form-label">Description</label>
-            <input type="text" class="form-control" id="new-description" placeholder="Enter new text here">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button onclick="createPost()" type="button" class="btn btn-primary">Create</button>
         </div>
       </div>
     </div>

@@ -11,7 +11,6 @@ from pprint import pprint
 from bson.objectid import ObjectId
 
 load_dotenv()
-
 key = environ["MONGODB_CONNECTION_STRING"]
 
 client = MongoClient(key, tlsCAFile=certifi.where())
@@ -40,26 +39,16 @@ class Product(BaseModel):
 
 
 class Post(BaseModel):
-    # comments for Thaty
-    # please include a "user_id" field
     user_id: Optional[str]
     image_urls_collection: Optional[list[str]]
     comment_count: Optional[int]
     image_url: Optional[str]
     creator: str
-    # Yoyofriends showed 123
-    # CatDogFriend444
     description: str
     image_url: Optional[str]
-    # All my friends showed up to my party, haha Corona
-    # My friends showed me a cute dog
-    # My friends ate a pie
-    # "friends showed"
 
 
 class Comment(BaseModel):
-    # comments for Julie
-    # please include a "user_id" field
     post_id: str
     creator: str
     body: str
@@ -69,7 +58,7 @@ class Comment(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return FileResponse(path.join("static", "feed.html"))
 
 
 @app.get("/admin/products")
@@ -247,21 +236,6 @@ def get_posts():
     return FileResponse(path.join("static", "temp-feed.html"))
 
 
-# {
-#     'posts': [
-#         {
-#             'creator': 'bla',
-#             'description': 'flflflflf',
-#             'comments': [
-#                 'post_id': '2l5kj2l34k',
-#                 'creator': 'steve',
-#                 'body': 'This is a great post!'
-#             ]
-#         }
-#     ]
-# }
-
-
 @app.get("/temp/feed")
 def get_posts():
     """
@@ -298,7 +272,6 @@ async def update_post(_id: str, post: Post):
 async def increase_like_count_for_posts(_id: str):
     obj_id = ObjectId(_id)
     post = db.posts.find_one({"_id": obj_id})
-    # new_like_count = post["like_count"] or 0
     new_like_count = post.get("like_count", 0)
     new_like_count += 1
     db.posts.update_one({"_id": obj_id}, {"$set": {"like_count": new_like_count}})
@@ -309,7 +282,6 @@ async def increase_like_count_for_posts(_id: str):
 async def increase_comment_count_for_posts(_id: str):
     obj_id = ObjectId(_id)
     post = db.posts.find_one({"_id": obj_id})
-    # new_like_count = post["like_count"] or 0
     new_comment_count = post.get("comment_count", 0)
     new_comment_count += 1
     db.posts.update_one({"_id": obj_id}, {"$set": {"comment_count": new_comment_count}})
